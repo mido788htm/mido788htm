@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LightningTasker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .logo img {
+            height: 50px;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+        main {
+            padding: 20px;
+            text-align: center;
+        }
+        .task-types {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .task-type {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 200px;
+        }
+        .task-type h3 {
+            margin-top: 0;
+            color: #555;
+        }
+        .load-more {
+            margin: 20px 0;
+        }
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+        button:hover, a:hover {
+            background-color: #ddd;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+        .hidden {
+            display: none;
+        }
+        .admin-login-form, .admin-dashboard {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="/mnt/data/file-XDeYVerykLPSmXMzuUcG9Vbv" alt="LightningTasker Logo">
+            <h1>LightningTasker</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#home"><i class="fas fa-home"></i> الصفحة الرئيسية</a></li>
+                <li><a href="#tasks"><i class="fas fa-tasks"></i> المهام</a></li>
+                <li><a href="#ads"><i class="fas fa-bullhorn"></i> الإعلانات</a></li>
+                <li><a href="#login"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</a></li>
+                <li><a href="#admin-login"><i class="fas fa-user-shield"></i> تسجيل دخول المدير</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="home">
+            <h2 id="welcome-message">مرحبًا بك في LightningTasker</h2>
+            <p>منصة العمل الحر التي تربط بين البائعين والمشترين في مكان واحد.</p>
+            <div class="task-types">
+                <div class="task-type">
+                    <h3>مهام بالساعة</h3>
+                    <p>مهام يتم حسابها بالساعة بسعر معين.</p>
+                </div>
+                <div class="task-type">
+                    <h3>مهام ثابتة</h3>
+                    <p>مهام بسعر ثابت لإنجاز العمل.</p>
+                </div>
+            </div>
+            <button class="load-more">إظهار المزيد من المهام</button>
+        </section>
+        <section id="admin-login" class="hidden">
+            <h2>تسجيل دخول المدير</h2>
+            <form id="admin-login-form">
+                <input type="text" id="admin-username" placeholder="اسم المستخدم" required>
+                <input type="password" id="admin-password" placeholder="كلمة المرور" required>
+                <button type="submit">تسجيل الدخول</button>
+            </form>
+        </section>
+        <section id="admin-dashboard" class="hidden">
+            <h2>لوحة إدارة الموقع</h2>
+            <div id="admin-details"></div>
+        </section>
+    </main>
+    <footer>
+        <p>© 2024 LightningTasker. جميع الحقوق محفوظة.</p>
+    </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/i18next/21.6.5/i18next.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/i18next-browser-languagedetector/6.1.2/i18nextBrowserLanguageDetector.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/i18next-xhr-backend/3.2.2/i18nextXHRBackend.min.js"></script>
+    <script>
+        const translations = {
+            ar: {
+                translation: {
+                    "welcome": "مرحبًا بك في LightningTasker"
+                }
+            },
+            en: {
+                translation: {
+                    "welcome": "Welcome to LightningTasker"
+                }
+            }
+        };
+
+        // i18next configuration for multilingual support
+        i18next.init({
+            lng: 'ar',
+            debug: true,
+            resources: translations
+        }, function(err, t) {
+            // Initialize the translation
+            document.getElementById('welcome-message').innerText = i18next.t('welcome');
+        });
+
+        // Function to get recommendations
+        function getRecommendations(userId) {
+            // Call to recommendation API
+            fetch(`/api/recommendations?user=${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    displayRecommendations(data);
+                });
+        }
+
+        function displayRecommendations(recommendations) {
+            const container = document.querySelector('.recommendations');
+            recommendations.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'recommendation-item';
+                div.innerHTML = `<h4>${item.title}</h4><p>${item.description}</p>`;
+                container.appendChild(div);
+            });
+        }
+
+        // Apply theme color
+        function applyTheme() {
+            const color = document.getElementById('theme-color').value;
+            document.documentElement.style.setProperty('--main-color', color);
+        }
+
+        // Example using Firebase for real-time notifications
+        const messaging = firebase.messaging();
+        messaging.onMessage((payload) => {
+            console.log('Message received. ', payload);
+            // Display notification
+        });
+
+        // Function to send feedback
+        function submitFeedback(event) {
+            event.preventDefault();
+            const feedback = document.querySelector('textarea[name="feedback"]').value;
+            fetch('/submit-feedback', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ feedback })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Feedback submitted successfully!');
+            });
+        }
+
+        // Admin login functionality
+        document.getElementById('admin-login-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const username = document.getElementById('admin-username').value;
+            const password = document.getElementById('admin-password').value;
+
+            // Check if credentials are correct (hardcoded for this example)
+            if (username === 'admin' && password === 'admin123') {
+                document.getElementById('admin-login').classList.add('hidden');
+                document.getElementById('admin-dashboard').classList.remove('hidden');
+                loadAdminDetails();
+            } else {
+                alert('خطأ في اسم المستخدم أو كلمة المرور');
+            }
+        });
+
+        // Load admin details
+        function loadAdminDetails() {
+            const details = `
+                <h3>مرحبًا بك، مدير الموقع</h3>
+                <p>يمكنك الآن إدارة الموقع والاطلاع على جميع التفاصيل.</p>
+                <!-- أضف هنا التفاصيل الأخرى مثل إدارة المستخدمين والمهام والإعلانات -->
+            `;
+            document.getElementById('admin-details').innerHTML = details;
+        }
+    </script>
+</body>
+</html>
